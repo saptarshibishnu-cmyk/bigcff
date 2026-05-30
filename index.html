@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BIG CFF Test</title>
+<style>
+body { background: #080A12; color: #E8EAF6; font-family: sans-serif; padding: 40px 20px; }
+.btn { display: block; width: 100%; padding: 16px; margin: 10px 0; border: none; border-radius: 12px; background: #4A6CF7; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; }
+#status { margin-top: 20px; font-size: 14px; color: #7B84B8; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div style="font-size:22px;font-weight:800;margin-bottom:8px">BIG CFF Analyzer</div>
+<div style="font-size:13px;color:#4A5070;margin-bottom:24px">Step 1: Confirm page loads</div>
+
+<button class="btn" onclick="test1()">Test 1: Basic JS</button>
+<button class="btn" onclick="test2()">Test 2: setInterval counter</button>
+<button class="btn" onclick="test3()">Test 3: Flicker dot</button>
+
+<div id="counter" style="font-size:48px;font-weight:800;color:#4A6CF7;margin:20px 0">--</div>
+<div id="dot" style="width:120px;height:120px;border-radius:50%;background:#000;border:1px solid #333;margin:20px auto"></div>
+<div id="status">Tap a button to test...</div>
+
+<script>
+var iid = null;
+var fid = null;
+var count = 0;
+
+function log(msg) {
+  document.getElementById('status').innerHTML += '<br>' + msg;
+}
+
+function test1() {
+  document.getElementById('status').innerHTML = 'Test 1: Basic JS working ✓';
+  document.getElementById('counter').textContent = 'OK';
+}
+
+function test2() {
+  if(iid) { clearInterval(iid); iid = null; document.getElementById('status').innerHTML = 'Counter stopped'; return; }
+  count = 0;
+  document.getElementById('status').innerHTML = 'Counter running...';
+  iid = setInterval(function() {
+    count++;
+    document.getElementById('counter').textContent = count;
+    if(count >= 50) { clearInterval(iid); iid = null; log('Counter finished at ' + count); }
+  }, 100);
+}
+
+function test3() {
+  if(fid) { fid = null; document.getElementById('dot').style.background = '#000'; log('Flicker stopped'); return; }
+  log('Flicker started...');
+  var on = false;
+  fid = -1;
+  function tick() {
+    if(fid === null) return;
+    on = !on;
+    document.getElementById('dot').style.background = on ? 'rgba(255,59,32,1)' : '#000';
+    fid = setTimeout(tick, 50);
+  }
+  tick();
+}
+</script>
+</body>
+</html>
